@@ -5,6 +5,7 @@ const express = require('express')
 const rowdy = require('rowdy-logger')
 const morgan = require('morgan')
 const cors = require('cors')
+const jwtCheck = require('./middleware/jwtCheck')
 
 // App Variables
 const app = express()
@@ -18,7 +19,11 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 // Controllers
-app.use('/favoriteFoods', require('./controllers/favoriteFoods'))
+app.use('/auth', require('./controllers/auth'))
+// Utilizing the custom isAuthorized Middleware to assert the requirement
+// that a Bearer token is required to access this resource
+app.use('/favoriteFoods', jwtCheck, require('./controllers/favoriteFoods'))
+
 
 // Routes
 app.get('/', (req, res) => {
